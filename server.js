@@ -1,24 +1,24 @@
+// Dependencies
 var express = require("express");
+var bodyParser = require("body-parser");
 var path = require("path");
 
 var app = express();
 
 var PORT = process.env.PORT || 8080;
 
-app.use(express.urlencoded({ extended: false }));
+// For serving of static CSS
+app.use(express.static(__dirname + "/app/css"));
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+// app.use(express.text());
+// app.use(express.json({ type: "application/vnd.api+json" }));
 
-var apiroutes = require("./app/routing/apiroutes.js");
-var htmlroutes = require("./app/routing/htmlroutes.js");
+// API and HTML routes
+require("./app/routing/apiRoutes.js")(app);
+require("./app/routing/htmlRoutes.js")(app);
 
-app.use(apiroutes);
-app.use(htmlroutes);
-
-//listening
 app.listen(PORT, function() {
-  console.log("App listening on PORT: " + PORT);
+	console.log("App listening on PORT: " + PORT);
 });
-
-app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "app/public/home.html"));
-})
